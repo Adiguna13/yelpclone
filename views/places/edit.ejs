@@ -1,41 +1,59 @@
 <% layout('layouts/app') %>
 <h1>Update Place</h1>
 <form action="/places/<%= place._id %>?_method=PUT" method="POST">
-  <div>
-    <label for="title">title</label>
-    <input
-      type="text"
-      name="place[title]"
-      id="title"
-      value="<%= place.title %>"
-    />
+  <div class="col-6 offset-3">
+    <form action="/places" method="POST">
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input
+          type="text"
+          name="place[title]"
+          id="title"
+          class="form-control"
+          value="<%= place.title %>"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input
+          type="text"
+          name="place[location]"
+          id="location"
+          class="form-control"
+          value="<%= place.location %>"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          name="place[description]"
+          id="description"
+          class="form-control"
+        >
+<%= place.description %></textarea
+        >
+      </div>
+      <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input
+          type="text"
+          name="place[price]"
+          id="price"
+          class="form-control"
+          value="<%= place.price %>"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="image" class="form-label">image</label>
+        <input
+          type="text"
+          name="place[image]"
+          id="image"
+          class="form-control"
+          value="<%= place.image %>"
+        />
+      </div>
+      <button type="submit" class="btn btn-success">Save</button>
+    </form>
   </div>
-  <div>
-    <label for="location">location</label>
-    <input
-      type="text"
-      name="place[location]"
-      id="location"
-      value="<%= place.location %>"
-    />
-  </div>
-  <div>
-    <label for="description">description</label>
-    <input
-      type="text"
-      name="place[description]"
-      id="description"
-      value="<%= place.description %>"
-    />
-  </div>
-  <div>
-    <label for="price">price</label>
-    <input
-      type="text"
-      name="place[price]"
-      id="price"
-      value="<%= place.price %>"
-    />
-  </div>
-  <button type="submit">Save</button>
 </form>
