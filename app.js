@@ -50,10 +50,14 @@ app.get("/places/create", (req, res) => {
   res.render("places/create");
 });
 
-app.post("/places", async (req, res) => {
-  const place = new Place(req.body.place);
-  await place.save();
-  res.redirect("/places");
+app.post("/places", async (req, res, next) => {
+  try {
+    const place = new Place(req.body.place);
+    await place.save();
+    res.redirect("/places");
+  } catch (error) {
+    next(err);
+  }
 });
 
 app.get("/places/:id", async (req, res) => {
@@ -76,6 +80,10 @@ app.put("/places/:id", async (req, res) => {
 app.delete("/places/:id", async (req, res) => {
   await Place.findByIdAndDelete(req.params.id);
   res.redirect("/places");
+});
+
+app.use((err, req, res, next) => {
+  res.status(500).send("Something Broke!");
 });
 
 app.listen(3000, () => {
