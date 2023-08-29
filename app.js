@@ -11,6 +11,9 @@ const app = express();
 //models
 const Place = require("./models/place");
 
+//schemas
+const { placeSchema } = require("./schemas/place");
+
 mongoose
   .connect("mongodb://127.0.0.1/bestpoints")
   .then((result) => {
@@ -27,6 +30,22 @@ app.set("views", path.join(__dirname, "views"));
 // middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+const validatePlace = (req, res, next) => {
+  // const { error } = placeSchema.validate(req.body);
+  // if (error) {
+  //   const msg = error.details.map((el) => el.message).join(",");
+  //   return next(new ErrorHandler(msg, 400));
+  // } else {
+  //   next();
+  // }
+  const { error } = placeSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    return next(new ErrorHandler(msg, 400));
+  } else {
+    next();
+  }
+};
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -58,22 +77,13 @@ app.get("/places/create", (req, res) => {
 
 app.post(
   "/places",
+  validatePlace,
   wrapAsync(async (req, res, next) => {
-    const placeSchema = Joi.object({
-      place: Joi.object({
-        title: Joi.string().required(),
-        location: Joi.string().required(),
-        description: Joi.string().required(),
-        price: Joi.number().required(),
-        image: Joi.string().required(),
-      }).required(),
-    });
-
-    const { error } = placeSchema.validate(req.body);
-    if (error) {
-      console.log(error);
-      return next(new ErrorHandler(error, 400));
-    }
+    // const { error } = placeSchema.validate(req.body);
+    // if (error) {
+    //   console.log(error);
+    //   return next(new ErrorHandler(error, 400));
+    // }
 
     const place = new Place(req.body.place);
     await place.save();
@@ -99,6 +109,7 @@ app.get(
 
 app.put(
   "/places/:id",
+  validatePlace,
   wrapAsync(async (req, res) => {
     await Place.findByIdAndUpdate(req.params.id, {
       ...req.body.place,
