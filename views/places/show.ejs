@@ -1,6 +1,6 @@
 <% layout('layouts/app') %>
 <div class="row">
-  <div class="col-6 offset-3">
+  <div class="col-6">
     <div class="card">
       <img
         src="<%= place.image %>"
@@ -31,4 +31,38 @@
       </div>
     </div>
   </div>
+  <div class="col-6">
+    <h3>Leave a review</h3>
+    <form action="">
+      <div class="mb-3">
+        <label for="rating">Rating: *<span id="ratingDisplay">3</span></label>
+        <input
+          type="range"
+          name="review[rating]"
+          id="rating"
+          class="form-range"
+          min="1"
+          max="5"
+          oninput="updateRating(this.value)"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="review">Review</label>
+        <textarea
+          name="review[body]"
+          id="body"
+          cols="30"
+          rows="5"
+          class="form-control"
+        ></textarea>
+      </div>
+      <button class="btn btn-success" type="submit">Submit</button>
+    </form>
+  </div>
 </div>
+<script>
+  function updateRating(value) {
+    document.getElementById("ratingDisplay").textContent = value;
+  }
+</script>
