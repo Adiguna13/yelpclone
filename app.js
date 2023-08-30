@@ -125,6 +125,18 @@ app.post(
   })
 );
 
+app.delete(
+  "/places/:place_id/reviews/:review_id",
+  wrapAsync(async (req, res) => {
+    const { place_id, review_id } = req.params;
+    await Place.findByIdAndUpdate(req.params.place_id, {
+      $pull: { reviews: review_id },
+    });
+    await Review.findByIdAndDelete(review_id);
+    res.redirect(`/places/${place_id}`);
+  })
+);
+
 app.all("*", (req, res, next) => {
   next(new ErrorHandler("Page not found", 404));
 });
