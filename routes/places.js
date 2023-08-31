@@ -1,13 +1,9 @@
 const express = require("express");
-const ErrorHandler = require("../utils/ErrorHandler");
 const wrapAsync = require("../utils/wrapAsync");
-const router = express.Router();
-
-//models
 const Place = require("../models/place");
-
-//schema
 const { placeSchema } = require("../schemas/place");
+const ErrorHandler = require("../utils/ErrorHandler");
+const router = express.Router();
 
 //validasi
 const validatePlace = (req, res, next) => {
@@ -34,7 +30,7 @@ router.get("/create", (req, res) => {
 });
 
 router.post(
-  "/places",
+  "/",
   validatePlace,
   wrapAsync(async (req, res, next) => {
     const place = new Place(req.body.place);

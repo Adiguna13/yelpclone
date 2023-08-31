@@ -1,20 +1,12 @@
 const ejsMate = require("ejs-mate");
 const express = require("express");
 const ErrorHandler = require("./utils/ErrorHandler");
-const Joi = require("joi");
+// const Joi = require("joi");
 const methodOverride = require("method-override");
 const wrapAsync = require("./utils/wrapAsync");
 const mongoose = require("mongoose");
 const path = require("path");
 const app = express();
-
-//models
-
-const Review = require("./models/review");
-
-//schemas
-
-const { reviewSchema } = require("./schemas/review");
 
 // connect to mongodb
 mongoose
@@ -35,16 +27,6 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    return next(new ErrorHandler(msg, 400));
-  } else {
-    next();
-  }
-};
-
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -52,30 +34,8 @@ app.get("/", (req, res) => {
 // places routes
 app.use("/places", require("./routes/places"));
 
-app.post(
-  "/places/:id/reviews",
-  validateReview,
-  wrapAsync(async (req, res) => {
-    const review = new Review(req.body.review);
-    const place = await Place.findById(req.params.id);
-    place.reviews.push(review);
-    await review.save();
-    await place.save();
-    res.redirect(`/places/${req.params.id}`);
-  })
-);
-
-app.delete(
-  "/places/:place_id/reviews/:review_id",
-  wrapAsync(async (req, res) => {
-    const { place_id, review_id } = req.params;
-    await Place.findByIdAndUpdate(req.params.place_id, {
-      $pull: { reviews: review_id },
-    });
-    await Review.findByIdAndDelete(review_id);
-    res.redirect(`/places/${place_id}`);
-  })
-);
+//review routes
+app.use("/places/:place_id/reviews", require("./routes/reviews"));
 
 app.all("*", (req, res, next) => {
   next(new ErrorHandler("Page not found", 404));
