@@ -61,13 +61,15 @@ router.put(
   validatePlace,
   wrapAsync(async (req, res) => {
     await Place.findByIdAndUpdate(req.params.id, { ...req.body.place });
-    res.redirect("/places");
+    req.flash("success_msg", "Place updated successfully");
+    res.redirect(`/places/${req.params.id}`);
   })
 );
 
 router.delete("/:id", async (req, res) => {
   await Place.findByIdAndDelete(req.params.id);
-  res.redirect("/places");
+  req.flash("success_msg", "Place deleted successfully");
+  res.redirect(`/places`);
 });
 
 module.exports = router;

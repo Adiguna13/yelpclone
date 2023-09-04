@@ -25,6 +25,7 @@ router.post(
     place.reviews.push(review);
     await review.save();
     await place.save();
+    req.flash("success_msg", "Review added successfully");
     res.redirect(`/places/${req.params.place_id}`);
   })
 );
@@ -37,6 +38,7 @@ router.delete(
       $pull: { reviews: review_id },
     });
     await Review.findByIdAndDelete(review_id);
+    req.flash("success_msg", "Review deleted successfully");
     res.redirect(`/places/${place_id}`);
   })
 );
