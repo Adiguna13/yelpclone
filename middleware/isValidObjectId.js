@@ -10,7 +10,7 @@ module.exports = (redirectUrl) => {
     }
 
     const id = req.params[paramId];
-    if (mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       req.flash("error_msg", "invalid Id / Data tidak ditemukan");
       return res.redirect(redirectUrl);
     }
