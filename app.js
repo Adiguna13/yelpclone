@@ -2,10 +2,13 @@ const ejsMate = require("ejs-mate");
 const express = require("express");
 const session = require("express-session");
 const flash = require("connect-flash");
+const User = require("./models/user");
 const ErrorHandler = require("./utils/ErrorHandler");
 // const Joi = require("joi");
 const methodOverride = require("method-override");
 const wrapAsync = require("./utils/wrapAsync");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
 const mongoose = require("mongoose");
 const path = require("path");
 const app = express();
@@ -42,6 +45,13 @@ app.use(
   })
 );
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser()); // setter
+passport.deserializeUser(User.deserializeUser()); // getter (ambil data yang di serialize oleh user)
+
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
@@ -50,6 +60,20 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.render("home");
+});
+
+app.get("/register", async (req, res) => {
+  const user = new User({
+    email: "user@gmail.com",
+    username: "user1",
+  });
+
+  const newUser = await User.register(user, "password");
+  res.send(newUser);
+
+  // User.register(user, 'password', (err, user)=>{
+  //   res.send(user)
+  // })
 });
 
 // places routes
