@@ -62,19 +62,8 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/register", async (req, res) => {
-  const user = new User({
-    email: "user@gmail.com",
-    username: "user1",
-  });
-
-  const newUser = await User.register(user, "password");
-  res.send(newUser);
-
-  // User.register(user, 'password', (err, user)=>{
-  //   res.send(user)
-  // })
-});
+//auth routes
+app.use("/", require("./routes/auth"));
 
 // places routes
 app.use("/places", require("./routes/places"));
