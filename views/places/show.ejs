@@ -1,7 +1,7 @@
 <% layout('layouts/app') %>
 <div class="row">
   <div class="col-6">
-    <div class="card">
+    <div class="card mb-5">
       <img
         src="<%= place.image %>"
         alt="<%= place.title %>"
@@ -17,6 +17,7 @@
         <li class="list-group-item"><%= place.price %></li>
       </ul>
       <div class="card-body">
+        <% if (currentUser && place.author.equals(currentUser._id)) { %>
         <a
           href="/places/<%= place._id %>/edit"
           class="card-link btn btn-warning text-white"
@@ -29,6 +30,7 @@
         >
           <button class="btn btn-danger">Delete</button>
         </form>
+        <% } %>
       </div>
     </div>
   </div>
