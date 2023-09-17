@@ -177,7 +177,7 @@ async function seedPlaces() {
 
   try {
     const newPlace = places.map((place) => {
-      return { ...place, author: "64fbcfec563d017e63130ef7" };
+      return { ...place, author: "65064f5669aa4c4a1c52eb2c" };
     });
     await Place.deleteMany({});
     await Place.insertMany(newPlace);
