@@ -82,7 +82,10 @@
           method="POST"
           style="display: inline !important"
         >
+        <% if (currentUser && review.author.equals(currentUser._id)) { %>
           <button class="btn btn-danger btn-sm">Delete</button>
+        <% } %>
+          
         </form>
       </div>
     </div>
