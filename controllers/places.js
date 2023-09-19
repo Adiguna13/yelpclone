@@ -39,17 +39,26 @@ module.exports.show = async (req, res) => {
   }
 
   module.exports.update = async (req, res) => {
-    const { id } = req.params;
-    const place = await Place.findByIdAndUpdate(id, { ...req.body.place });
-    if (req.files && req.files.length > 0) {
-      place.images.forEach(image => {
-          fs.unlinkSync(image.url);
-      });
+    const { id } = req.params;   
+    const place = await Place.findById(id);
+    place.title = req.body.place.title;
+    place.price = req.body.place.price;
+    place.description = req.body.place.description;
+    place.location = req.body.place.location;
 
-      const images = req.files.map(file => ({ url: file.path, filename: file.filename }));
-      place.images = images;
+    // Save the updated place
+    await place.save();
+
+    if (req.files && req.files.length > 0) {
+    const newImages = req.files.map((file) => ({
+        url: file.path,
+        filename: file.filename,
+      }));
+      place.images.push(...newImages);
+
       await place.save();
-    }
+    } 
+
     req.flash("success_msg", "Place updated successfully");
     res.redirect(`/places/${place._id}`);
   }

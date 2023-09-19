@@ -1,17 +1,26 @@
 <% layout('layouts/app') %>
 <h1>All Places</h1>
-<a href="/places/create">Add Place</a>
+<!-- <a href="/places/create">Add Place</a> -->
 
 <% for(const place of places) { %>
 <div class="card mb-3">
   <div class="row">
     <div class="col-md-3">
+      <% if (place.images.length > 0) { %>
       <img
-        src="<%= place.image %>"
+        src="/images/<%= place.images[0].filename %>"
         alt="<%= place.title %>"
         class="img-fluid img-thumbnail"
         style="max-height: 300px"
       />
+      <% } else { %>  
+      <img
+        src=""
+        alt="No Image Available"
+        class="img-fluid img-thumbnail"
+        style="max-height: 300px"
+      />
+      <% } %>
     </div>
     <div class="col-md-9">
       <div class="card-body">

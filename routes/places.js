@@ -8,18 +8,10 @@ const {isAuthorPlace} = require('../middlewares/isAuthor');
 const upload = require("../config/multer");
 const router = express.Router();
 
-
-
 //routes
-
 router.route('/')
   .get(wrapAsync(PlaceController.index))
   .post(isAuth, upload.array('image', 5), validatePlace,wrapAsync(PlaceController.store));
-  // .post(isAuth, upload.array('image', 5), (req, res) => {
-  //   console.log(req.files);
-  //   console.log(req.body);
-  //   res.send('works');
-  // })
 
 router.get("/create", isAuth, PlaceController.create);
 
