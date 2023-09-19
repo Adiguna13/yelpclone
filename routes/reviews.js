@@ -1,8 +1,7 @@
 const express = require("express");
-const Place = require("../models/place");
+const ReviewController = require('../controllers/reviews');
 const ErrorHandler = require("../utils/ErrorHandler");
 const wrapAsync = require("../utils/wrapAsync");
-const Review = require("../models/review");
 const { reviewSchema } = require("../schemas/review");
 const isValidObjectId = require("../middlewares/isValidObjectId");
 const isAuth = require("../middlewares/isAuth");
@@ -24,17 +23,7 @@ router.post(
   isAuth,  
   isValidObjectId("/places"),
   validateReview,
-  wrapAsync(async (req, res) => {
-    const {place_id} = req.params;
-    const review = new Review(req.body.review);
-    review.author = req.user._id;
-    await review.save();
-    const place = await Place.findById(req.params.place_id);
-    place.reviews.push(review);
-    await place.save();
-    req.flash("success_msg", "Review added successfully");
-    res.redirect(`/places/${req.params.place_id}`);
-  })
+  wrapAsync(ReviewController.store)
 );
 
 router.delete(
@@ -42,15 +31,7 @@ router.delete(
   isAuth,
   isAuthorReview,
   isValidObjectId("/places"),
-  wrapAsync(async (req, res) => {
-    const { place_id, review_id } = req.params;
-    await Place.findByIdAndUpdate(place_id, {
-      $pull: { reviews: review_id },
-    });
-    await Review.findByIdAndDelete(review_id);
-    req.flash("success_msg", "Review deleted successfully");
-    res.redirect(`/places/${place_id}`);
-  })
+  wrapAsync(ReviewController.destroy)
 );
 
 module.exports = router;
